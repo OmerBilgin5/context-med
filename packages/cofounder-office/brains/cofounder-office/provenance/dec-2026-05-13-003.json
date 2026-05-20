@@ -1,0 +1,21 @@
+{
+  "id": "dec-2026-05-13-003",
+  "timestamp": "2026-05-13T22:39:21.336Z",
+  "persona": "mimar",
+  "channel": "#operasyon",
+  "input_hash": "sha256:015869210b8d",
+  "input_preview": "Arabulucu, önümüzdeki hafta production ortamına yeni bir ödeme altyapısı deploy etmemiz gerekiyor. Sisteme hassas müşteri verisi ve API key'ler işlene",
+  "output_preview": "Rakam var mı? Bu neuen pagamento altyapısındaki müşteri verisi ve API key'ler nasıl korunacak?",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 80
+  },
+  "provenance_tags": [
+    "Persona Core"
+  ],
+  "output_length": 94
+}

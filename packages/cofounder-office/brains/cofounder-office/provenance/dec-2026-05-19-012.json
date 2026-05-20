@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-19-012",
+  "timestamp": "2026-05-19T23:05:38.979Z",
+  "persona": "icraci",
+  "channel": "#strateji",
+  "input_hash": "sha256:97da08784a86",
+  "input_preview": "Bunu hemen production ortamına deploy et.",
+  "output_preview": "HATA: Sistem yanıt oluşturamadı.",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 32
+}

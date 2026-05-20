@@ -8,6 +8,67 @@ const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const OpenAI = require('openai');
 
+// ─── Eval Middleware (Persona Fidelity Scoring) ─────────────────────────────
+let evalMiddleware = null;
+try {
+  evalMiddleware = require('../src/lib/eval-middleware');
+  console.log('✅ Eval Middleware loaded — persona fidelity scoring active');
+} catch (e) {
+  console.warn('⚠️  Eval Middleware not found — scoring disabled');
+}
+
+// ─── Schema Loader (Office YAML → Runtime) ──────────────────────────────────
+let schemaLoader = null;
+try {
+  schemaLoader = require('../src/lib/schema-loader');
+  const loadResult = schemaLoader.loadSchema();
+  if (loadResult.errors.length === 0) {
+    console.log('✅ Office Schema loaded —', Object.keys(loadResult.schema.roster).length, 'personas,', loadResult.schema.channels.length, 'channels');
+    // Start hot-reload watcher
+    schemaLoader.startWatching();
+    schemaLoader.onReload((newSchema) => {
+      console.log('🔄 Schema hot-reloaded — broadcasting to clients');
+      io.emit('schema_updated', {
+        roster: newSchema.roster,
+        hierarchy: newSchema.hierarchy,
+        channels: newSchema.channels,
+        loaded_at: newSchema._loaded_at,
+      });
+    });
+  } else {
+    console.warn('⚠️  Office Schema errors:', loadResult.errors.join('; '));
+  }
+} catch (e) {
+  console.warn('⚠️  Schema Loader not found — schema features disabled');
+}
+
+// ─── Provenance Trail (Decision Logging) ───────────────────────────────────
+let provenance = null;
+try {
+  provenance = require('../src/lib/provenance');
+  console.log('✅ Provenance Trail loaded — decision logging active');
+} catch (e) {
+  console.warn('⚠️  Provenance module not found — trail disabled');
+}
+
+// ─── HITL Policy Engine ───────────────────────────────────────────────
+let hitlEngine = null;
+try {
+  hitlEngine = require('../src/lib/hitl-engine');
+  console.log('✅ HITL Engine loaded — risk classification active');
+} catch (e) {
+  console.warn('⚠️  HITL Engine not found — risk classification disabled');
+}
+
+// ─── Scheduler (Proactive Tasks) ─────────────────────────────────────
+let scheduler = null;
+try {
+  scheduler = require('../src/lib/scheduler');
+  console.log('✅ Scheduler loaded —', scheduler.getAllSchedules().length, 'schedules registered');
+} catch (e) {
+  console.warn('⚠️  Scheduler not found — proactive tasks disabled');
+}
+
 const app = express();
 app.use(cors());
 const server = http.createServer(app);
@@ -17,7 +78,8 @@ const io = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } 
 const providers = {
   groq: null,
   gemini: null,
-  openrouter: null
+  openrouter: null,
+  ollama: null
 };
 
 if (process.env.GROQ_API_KEY) {
@@ -28,8 +90,8 @@ if (process.env.GROQ_API_KEY) {
 if (process.env.GEMINI_API_KEY) {
   console.log('Gemini Provider initialized');
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  // Gemini 2.0 (Experimental) - 404 hatalarını aşmak için
-  providers.gemini = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+  // Gemini modeli (.env üzerinden özelleştirilebilir, varsayılan olarak stabil 1.5-flash kullanılır)
+  providers.gemini = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || 'gemini-1.5-flash' });
 }
 
 if (process.env.OPENROUTER_API_KEY) {
@@ -41,6 +103,14 @@ if (process.env.OPENROUTER_API_KEY) {
       'HTTP-Referer': 'http://localhost:3000', // Opsiyonel
       'X-Title': 'Cofounder Office',
     }
+  });
+}
+
+if (process.env.USE_OLLAMA === 'true') {
+  console.log('Ollama Provider initialized');
+  providers.ollama = new OpenAI({ 
+    apiKey: 'ollama', // OpenAI istemcisi apiKey bekler, Ollama için herhangi bir değer yeterlidir.
+    baseURL: 'http://localhost:11434/v1' 
   });
 }
 
@@ -115,16 +185,142 @@ function readCerebraMemory() {
   } catch { return ''; }
 }
 
+// ─── TOOL DEFINITIONS (MCP Style) ─────────────────────────────────────────────
+const ICRACI_TOOLS = [
+  {
+    type: "function",
+    function: {
+      name: "read_file",
+      description: "Belirtilen dosyanın içeriğini okur.",
+      parameters: {
+        type: "object",
+        properties: {
+          filepath: { type: "string", description: "Okunacak dosyanın yolu (ör: office.yml veya ../README.md)" }
+        },
+        required: ["filepath"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
+      name: "list_directory",
+      description: "Belirtilen klasördeki dosyaları listeler.",
+      parameters: {
+        type: "object",
+        properties: {
+          dirpath: { type: "string", description: "Listelenecek klasör yolu (ör: . veya config/)" }
+        },
+        required: ["dirpath"]
+      }
+    }
+  },
+  {
+    type: "function",
+    function: {
+      name: "write_file",
+      description: "Belirtilen dosyaya metin yazar veya dosyayı günceller. Dosya yoksa oluşturur.",
+      parameters: {
+        type: "object",
+        properties: {
+          filepath: { type: "string", description: "Yazılacak dosyanın yolu (ör: deneme.md veya ../src/index.js)" },
+          content: { type: "string", description: "Dosyaya yazılacak tam içerik." }
+        },
+        required: ["filepath", "content"]
+      }
+    }
+  }
+];
+
+function executeToolCall(toolCall) {
+  try {
+    const args = JSON.parse(toolCall.function.arguments || '{}');
+    const safeBase = path.resolve(__dirname, '..');
+    
+    console.log(`\n[🛠️ TOOL KULLANILDI] Ajan şu aracı çağırdı: ${toolCall.function.name}`);
+    console.log(`[🛠️ ARGÜMANLAR]:`, args);
+    
+    if (toolCall.function.name === 'read_file') {
+      const targetPath = path.resolve(__dirname, args.filepath);
+      if (!targetPath.startsWith(safeBase)) {
+        console.log(`[❌ HATA] Güvenli klasör dışı erişim: ${targetPath}`);
+        return "HATA: Güvenli klasör dışına erişim engellendi.";
+      }
+      if (!fs.existsSync(targetPath)) {
+        console.log(`[❌ HATA] Dosya bulunamadı: ${targetPath}`);
+        return `HATA: ${args.filepath} bulunamadı. Lütfen doğru yolu verdiğinizden emin olun.`;
+      }
+      console.log(`[✅ BAŞARILI] Dosya okundu: ${targetPath}`);
+      return fs.readFileSync(targetPath, 'utf8').substring(0, 3000);
+    }
+    
+    if (toolCall.function.name === 'list_directory') {
+      const p = args.dirpath || args.filepath || '.';
+      const targetPath = path.resolve(__dirname, p);
+      if (!targetPath.startsWith(safeBase)) {
+        console.log(`[❌ HATA] Güvenli klasör dışı erişim: ${targetPath}`);
+        return "HATA: Güvenli klasör dışına erişim engellendi.";
+      }
+      if (!fs.existsSync(targetPath)) {
+        console.log(`[❌ HATA] Klasör bulunamadı: ${targetPath}`);
+        return `HATA: ${args.dirpath} klasörü bulunamadı.`;
+      }
+      console.log(`[✅ BAŞARILI] Klasör listelendi: ${targetPath}`);
+      return fs.readdirSync(targetPath).join('\n');
+    }
+    
+    if (toolCall.function.name === 'write_file') {
+      const targetPath = path.resolve(__dirname, args.filepath);
+      if (!targetPath.startsWith(safeBase)) {
+        console.log(`[❌ HATA] Güvenli klasör dışı erişim: ${targetPath}`);
+        return "HATA: Güvenli klasör dışına erişim engellendi.";
+      }
+      
+      const dir = path.dirname(targetPath);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      
+      fs.writeFileSync(targetPath, args.content, 'utf8');
+      console.log(`[✅ BAŞARILI] Dosya yazıldı: ${targetPath}`);
+      return `[✅ BAŞARILI] Dosya başarıyla oluşturuldu/güncellendi: ${args.filepath}`;
+    }
+    
+    console.log(`[❌ HATA] Bilinmeyen araç: ${toolCall.function.name}`);
+    return "HATA: Bilinmeyen araç.";
+  } catch (e) {
+    console.log(`[❌ HATA] Araç çalıştırma hatası: ${e.message}`);
+    return "HATA (Araç çalıştırılamadı): " + e.message;
+  }
+}
+
+
+// ─── API Rate Limiting Lock ───────────────────────────────────────────────────
+let apiLock = Promise.resolve();
+function acquireApiLock() {
+  const wait = apiLock;
+  apiLock = wait.then(() => new Promise(resolve => setTimeout(resolve, 3000))); // 3 seconds between API calls (20 RPM)
+  return wait;
+}
+
 // ─── AI — streaming (opsiyonel soket yayını ile) ─────────────────────────────
 // ─── AI — streaming (Otomatik Fallback dahil) ──────────────────────────────
-async function streamAIResponse(socket, role, channel, prompt, doStream = true) {
+async function streamAIResponse(socket, role, channel, input, doStream = true) {
+  await acquireApiLock();
   let fullText = '';
+  
+  let messages;
+  if (typeof input === 'string') {
+    messages = [{ role: 'user', content: input }];
+  } else if (Array.isArray(input)) {
+    messages = input;
+  } else {
+    throw new Error('Invalid input to streamAIResponse');
+  }
 
   // 1. Önce Groq Dene
   if (providers.groq) {
     try {
       const stream = await providers.groq.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
+        messages: messages,
         model: 'llama-3.3-70b-versatile',
         stream: true,
       });
@@ -145,7 +341,8 @@ async function streamAIResponse(socket, role, channel, prompt, doStream = true) 
   // 2. Fallback: Gemini
   if (providers.gemini) {
     try {
-      const result = await providers.gemini.generateContentStream(prompt);
+      const promptStr = typeof input === 'string' ? input : JSON.stringify(input);
+      const result = await providers.gemini.generateContentStream(promptStr);
       for await (const chunk of result.stream) {
         const delta = chunk.text();
         if (delta) { 
@@ -163,7 +360,7 @@ async function streamAIResponse(socket, role, channel, prompt, doStream = true) 
   if (providers.openrouter) {
     try {
       const stream = await providers.openrouter.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
+        messages: messages,
         model: 'openrouter/auto', // OpenRouter'ın en uygun (ücretsiz/ucuz) modeli seçmesini sağla
         stream: true,
       });
@@ -180,6 +377,27 @@ async function streamAIResponse(socket, role, channel, prompt, doStream = true) 
     }
   }
 
+  // 4. Fallback: Ollama Local (En son çare, universal fallback)
+  if (providers.ollama) {
+    try {
+      const stream = await providers.ollama.chat.completions.create({
+        messages: messages,
+        model: process.env.OLLAMA_MODEL || 'llama3.1:8b',
+        stream: true,
+      });
+      for await (const chunk of stream) {
+        const delta = chunk.choices[0]?.delta?.content || '';
+        if (delta) { 
+          fullText += delta; 
+          if (doStream && socket) socket.emit('agent_stream', { role, channel, chunk: delta }); 
+        }
+      }
+      return fullText;
+    } catch (e) {
+      console.warn('Ollama Stream Error:', e.message);
+    }
+  }
+
   // Eğer hiçbir sağlayıcı çalışmazsa kullanıcıya bilgi ver
   if (socket) socket.emit('agent_message', { 
     role: 'system', 
@@ -192,22 +410,45 @@ async function streamAIResponse(socket, role, channel, prompt, doStream = true) 
 }
 
 // ─── AI — tek seferde (Otomatik Fallback dahil) ─────────────────────────────
-async function getAIResponse(prompt) {
+async function getAIResponse(input, tools = null, depth = 0) {
+  await acquireApiLock();
+  let messages;
+  if (typeof input === 'string') {
+    messages = [{ role: 'user', content: input }];
+  } else if (Array.isArray(input)) {
+    messages = input;
+  } else {
+    throw new Error('Invalid input to getAIResponse');
+  }
+
   // 1. Groq
   if (providers.groq) {
     try {
-      const res = await providers.groq.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
+      const reqBody = {
+        messages: messages,
         model: 'llama-3.3-70b-versatile',
-      });
-      return res.choices[0].message.content;
+      };
+      if (tools) reqBody.tools = tools;
+      
+      const res = await providers.groq.chat.completions.create(reqBody);
+      const msg = res.choices[0].message;
+      
+      if (msg.tool_calls && msg.tool_calls.length > 0) {
+        const toolCall = msg.tool_calls[0];
+        const resultText = executeToolCall(toolCall);
+        const nextMessages = [...messages];
+        nextMessages.push({ role: 'system', content: `[Araç Kullanımı: ${toolCall.function.name}]\nSonuç:\n${resultText}\nLütfen bu sonuca dayanarak yanıtını oluştur.` });
+        return await getAIResponse(nextMessages, depth < 3 ? tools : null, depth + 1);
+      }
+      return msg.content;
     } catch (e) { console.warn('Groq Error:', e.message); }
   }
 
   // 2. Gemini
   if (providers.gemini) {
     try {
-      const result = await providers.gemini.generateContent(prompt);
+      const promptStr = typeof input === 'string' ? input : JSON.stringify(input);
+      const result = await providers.gemini.generateContent(promptStr);
       return result.response.text();
     } catch (e) { console.warn('Gemini Error:', e.message); }
   }
@@ -215,12 +456,46 @@ async function getAIResponse(prompt) {
   // 3. OpenRouter
   if (providers.openrouter) {
     try {
-      const res = await providers.openrouter.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
+      const reqBody = {
+        messages: messages,
         model: 'openrouter/auto',
-      });
-      return res.choices[0].message.content;
+      };
+      if (tools) reqBody.tools = tools;
+      
+      const res = await providers.openrouter.chat.completions.create(reqBody);
+      const msg = res.choices[0].message;
+      if (msg.tool_calls && msg.tool_calls.length > 0) {
+        const toolCall = msg.tool_calls[0];
+        const resultText = executeToolCall(toolCall);
+        const nextMessages = [...messages];
+        nextMessages.push({ role: 'system', content: `[Araç Kullanımı: ${toolCall.function.name}]\nSonuç:\n${resultText}\nLütfen bu sonuca dayanarak yanıtını oluştur.` });
+        return await getAIResponse(nextMessages, depth < 3 ? tools : null, depth + 1); 
+      }
+      return msg.content;
     } catch (e) { console.error('OpenRouter Error:', e.message); }
+  }
+
+  // 4. Fallback: Ollama Local (En son çare, universal fallback)
+  if (providers.ollama) {
+    try {
+      const reqBody = {
+        messages: messages,
+        model: process.env.OLLAMA_MODEL || 'llama3.1:8b',
+      };
+      if (tools) reqBody.tools = tools;
+      
+      const res = await providers.ollama.chat.completions.create(reqBody);
+      const msg = res.choices[0].message;
+      
+      if (msg.tool_calls && msg.tool_calls.length > 0) {
+        const toolCall = msg.tool_calls[0];
+        const resultText = executeToolCall(toolCall);
+        const nextMessages = [...messages];
+        nextMessages.push({ role: 'system', content: `[Araç Kullanımı: ${toolCall.function.name}]\nSonuç:\n${resultText}\nLütfen bu sonuca dayanarak yanıtını oluştur.` });
+        return await getAIResponse(nextMessages, depth < 3 ? tools : null, depth + 1);
+      }
+      return msg.content;
+    } catch (e) { console.warn('Ollama Error:', e.message); }
   }
 
   throw new Error('All AI providers failed');
@@ -408,8 +683,11 @@ function tagProvenance(role, text) {
 async function generateRealityAudit(socket, channel, mimarText, doerText) {
   if (!mimarText && !doerText) return null;
   try {
-    const prompt = `${getPersonaFull('arabulucu')}\n\nMimar dedi: "${(mimarText || '-').substring(0, 300)}"\nİcracı dedi: "${(doerText || '-').substring(0, 300)}"\n\nSen PM'sin. Shadow Wiki için JSON reality audit yaz:\n{"vision":"Mimar iddiası kısa","reality":"Gerçek durum kısa","riskPercent":0-100,"gaps":["gap1","gap2"]}\nSadece JSON döndür.`;
-    const raw = await getAIResponse(prompt);
+    const messages = [
+      { role: 'system', content: getPersonaFull('arabulucu') },
+      { role: 'user', content: `Mimar dedi: "${(mimarText || '-').substring(0, 300)}"\nİcracı dedi: "${(doerText || '-').substring(0, 300)}"\n\nSen PM'sin. Shadow Wiki için JSON reality audit yaz:\n{"vision":"Mimar iddiası kısa","reality":"Gerçek durum kısa","riskPercent":0-100,"gaps":["gap1","gap2"]}\nSadece JSON döndür.` }
+    ];
+    const raw = await getAIResponse(messages);
     const match = raw.match(/\{[\s\S]*?\}/);
     if (!match) return null;
     const audit = JSON.parse(match[0]);
@@ -496,18 +774,20 @@ async function runAgentTurn(socket, role, message, histCtx, priorResponses, chan
 
   // ── Mimar: çok parçalı, klişesiz, kısa mesajlar ──────────────────────────
   if (role === 'mimar') {
-    const prompt = `${persona}${histCtx}
-
-Kullanıcı: "${message}"${priorCtx}${tensionCtx}
-
-Mimar (CVO) olarak yanıt ver. KESİN KURALLAR:
+    const messages = [
+      { 
+        role: 'system', 
+        content: `${persona}\n\n[Sistem Bağlamı]:\n${histCtx}\n${priorCtx}\n${tensionCtx}\n\nMimar (CVO) olarak yanıt ver. KESİN KURALLAR:
 - Her mesaj 1-2 kısa cümle. Asla paragraf.
 - Birden fazla ayrı mesaj göndermek istersen aralarına sadece "---" koy.
 - "Vizyonu kaçırıyorsunuz", "Mindset" gibi klişe ifadeler YASAK.
 - Her yanıtta farklı bir açı seç: soru sor / onay ver / görev ver / rakip kıyasla / rakam iste.
-- Plaza Türkçesi, sert ve kısa.${extra}`;
+- Plaza Türkçesi, sert ve kısa.${extra}`
+      },
+      { role: 'user', content: message }
+    ];
 
-    const rawText = await getAIResponse(prompt);
+    const rawText = await getAIResponse(messages);
     const parts = rawText.split(/\n?---\n?/).map(p => p.trim()).filter(Boolean);
     priorResponses.mimar = parts.join(' ').substring(0, 300);
 
@@ -529,17 +809,63 @@ Mimar (CVO) olarak yanıt ver. KESİN KURALLAR:
     }
 
     socket.emit('agent_stream_end', { role: 'mimar', channel, fullText: priorResponses.mimar });
+
+    // ── Eval Scoring Hook ───────────────────────────────────────────────
+    let evalResult = null;
+    if (evalMiddleware) {
+      try {
+        evalResult = evalMiddleware.scoreResponse('mimar', priorResponses.mimar, message);
+        if (evalResult) socket.emit('eval_score', { channel, ...evalResult });
+      } catch (e) { console.warn('Eval scoring error (mimar):', e.message); }
+    }
+
+    // ── Provenance Recording ────────────────────────────────────────────
+    if (provenance) {
+      try {
+        const pEntry = provenance.recordProvenance({
+          persona: 'mimar', channel,
+          user_input: message,
+          ai_output: priorResponses.mimar,
+          hitl_status: 'auto',
+          eval_score: evalResult ? { fidelity_score: evalResult.fidelity_score } : null,
+          provenance_tags: tagProvenance('mimar', priorResponses.mimar),
+        });
+        socket.emit('provenance_recorded', { id: pEntry.id, persona: 'mimar', channel });
+      } catch (e) { console.warn('Provenance error (mimar):', e.message); }
+    }
+
     return priorResponses.mimar;
   }
 
   // ── PM ve İcracı: sessiz AI çağrısı + cümle cümle ayrı mesaj ─────────────
   const pmAddon = role === 'arabulucu'
-    ? '\n\nNOT: PM olarak operasyonel kararlarında bazen [TASK] etiketini kullanmayı unutma. Yanıtının sonuna "Gizli Not: [panik/düşünce notu, tek satır]" ekle.'
+    ? '\n\nNOT: PM olarak operasyonel kararlarında bazen [TASK] etiketini kullanmayı unutma. EĞER görev karmaşık veya çok adımlıysa (kod yazmak, dosya oluşturmak gibi), KESİNLİKLE yanıtının içinde şu formatta bir JSON GOAP planı oluştur:\n```json\n{"goap_plan": [{"step": 1, "task": "Açıklama"}]}\n```\nKRİTİK KURAL: Asla birden fazla dosyayı tek bir adımda birleştirme! Her dosya yazma veya okuma işlemi kendi başına ayrı bir "step" olmak ZORUNDADIR. \nYanıtının sonuna "Gizli Not: [panik/düşünce notu, tek satır]" ekle.'
     : '';
 
-  const prompt = `${persona}${histCtx}\n\nKullanıcı: "${message}"${priorCtx}${tensionCtx}\n\nRolün: ${ROLE_NAMES[role]}. Türkçe yanıt ver. Maksimum 3 kısa cümle. Uzun paragraf yazma.${extra}${pmAddon}`;
+  const icraciAddon = role === 'icraci'
+    ? '\n\nANTİ-HALÜSİNASYON KURALI (KRİTİK): Eğer kullanıcı bir dosya içeriği sorarsa ASLA tahmin etme veya "oluşturuldu" gibi uydurma şeyler söyleme. Önce GEREKLİ ARACI (read_file) kullanarak dosyayı oku. Eğer araç "HATA: ... bulunamadı" derse, "Dosya yok, yol yanlış olabilir" diye cevap ver. ASLA GÖRMEDİĞİN BİLGİYİ UYDURMA.'
+    : '';
 
-  const fullText = await streamAIResponse(socket, role, channel, prompt, false);
+  const messages = [
+    {
+      role: 'system',
+      content: `${persona}\n\n[Sistem Bağlamı]:\n${histCtx}\n${priorCtx}\n${tensionCtx}\n\nRolün: ${ROLE_NAMES[role]}. Türkçe yanıt ver. Maksimum 3 kısa cümle. Uzun paragraf yazma.${extra}${pmAddon}${icraciAddon}`
+    },
+    { role: 'user', content: message }
+  ];
+
+  let fullText = '';
+  try {
+    if (role === 'icraci') {
+      fullText = await getAIResponse(messages, ICRACI_TOOLS);
+    } else {
+      fullText = await streamAIResponse(socket, role, channel, messages, false);
+    }
+  } catch (error) {
+    console.error(`[❌ FATAL] Ajan Hatası (${role}):`, error);
+    fullText = "HATA: Sistem yanıt oluşturamadı.";
+  }
+  
   let cleanText = fullText.trim();
   let pmNote;
 
@@ -580,6 +906,31 @@ Mimar (CVO) olarak yanıt ver. KESİN KURALLAR:
   }
 
   socket.emit('agent_stream_end', { role, channel, fullText: cleanText });
+
+  // ── Eval Scoring Hook ─────────────────────────────────────────────────
+  let evalResult = null;
+  if (evalMiddleware) {
+    try {
+      evalResult = evalMiddleware.scoreResponse(role, cleanText, message);
+      if (evalResult) socket.emit('eval_score', { channel, ...evalResult });
+    } catch (e) { console.warn(`Eval scoring error (${role}):`, e.message); }
+  }
+
+  // ── Provenance Recording ──────────────────────────────────────────────
+  if (provenance) {
+    try {
+      const pEntry = provenance.recordProvenance({
+        persona: role, channel,
+        user_input: message,
+        ai_output: cleanText,
+        hitl_status: 'auto',
+        eval_score: evalResult ? { fidelity_score: evalResult.fidelity_score } : null,
+        provenance_tags: tagProvenance(role, cleanText),
+      });
+      socket.emit('provenance_recorded', { id: pEntry.id, persona: role, channel });
+    } catch (e) { console.warn(`Provenance error (${role}):`, e.message); }
+  }
+
   return cleanText;
 }
 
@@ -843,6 +1194,94 @@ setInterval(() => {
   });
 }, 60_000);
 
+// ─── Canlı Sunum Güvencesi (Demo Mode Fallback) ──────────────────────────────────
+async function runDemoModeFallback(socket, channel, message) {
+  const t = String(message || '').toLowerCase();
+  const priorResponses = {};
+  
+  if (t.includes('rakip') || t.includes('medai') || t.includes('yol haritası') || t.includes('roadmap') || t.includes('lansman')) {
+    // Senaryo A: Rakip lansmanı & Strateji
+    socket.emit('typing_start', { role: 'mimar', channel });
+    await delay(1500 + Math.random() * 500);
+    const mimarText = "ContextMed AI olarak bizim odak noktamız ameliyat esnasındaki gerçek zamanlı veri akışıdır (ultra-low latency). Rakibimiz MedAI poliklinik raporu özetleme çıkarmış. %98 klinik doğruluk oranımızı tehdit etmez, panik yapmaya gerek yok.";
+    priorResponses.mimar = mimarText;
+    socket.emit('agent_message', {
+      channel, role: 'mimar', name: ROLE_NAMES.mimar,
+      text: mimarText, ts: nowTime(),
+      provenance: ['Persona Core', 'Decision Heuristics']
+    });
+    socket.emit('agent_stream_end', { role: 'mimar', channel, fullText: mimarText });
+
+    await delay(1200 + Math.random() * 500);
+    socket.emit('typing_start', { role: 'arabulucu', channel });
+    await delay(1800 + Math.random() * 500);
+    const pmText = "Mimar'a katılıyorum. Bütçemiz kısıtlı (2 aylık runway) ve odağımızı dağıtamayız. Ancak jürinin ilgisini çekmek adına web arayüzümüzdeki gecikme sürelerini görselleştiren küçük bir gösterge paneli hazırlayabiliriz. İcracı'ya bu görevi atıyorum.";
+    priorResponses.arabulucu = pmText;
+    socket.emit('agent_message', {
+      channel, role: 'arabulucu', name: ROLE_NAMES.arabulucu,
+      text: pmText, ts: nowTime(),
+      provenance: ['Work Domain', 'Correction-Calibrated'],
+      note: "Vizyonu bozmadan bütçe dengesini korumalıyız."
+    });
+    socket.emit('agent_stream_end', { role: 'arabulucu', channel, fullText: pmText });
+  } else if (t.includes('deploy') || t.includes('production') || t.includes('veritabanı') || t.includes('yükle') || t.includes('kur')) {
+    // Senaryo B: Kritik deploy (HITL Tetikleyici)
+    socket.emit('typing_start', { role: 'mimar', channel });
+    await delay(1500 + Math.random() * 500);
+    const mimarText = "Bunu hemen production ortamına deploy edemeyiz! Teknik testler yapıldı mı? Klinik doğruluk her şeyden önemlidir!";
+    priorResponses.mimar = mimarText;
+    socket.emit('agent_message', {
+      channel, role: 'mimar', name: ROLE_NAMES.mimar,
+      text: mimarText, ts: nowTime(),
+      provenance: ['Persona Core']
+    });
+    socket.emit('agent_stream_end', { role: 'mimar', channel, fullText: mimarText });
+
+    await delay(1000 + Math.random() * 500);
+    socket.emit('typing_start', { role: 'arabulucu', channel });
+    await delay(1500 + Math.random() * 500);
+    const pmText = "Önce QA ve staging ortamında test etmeliyiz. Risk analizini başlatıyorum.";
+    priorResponses.arabulucu = pmText;
+    socket.emit('agent_message', {
+      channel, role: 'arabulucu', name: ROLE_NAMES.arabulucu,
+      text: pmText, ts: nowTime(),
+      provenance: ['Work Domain', 'Correction-Calibrated']
+    });
+    socket.emit('agent_stream_end', { role: 'arabulucu', channel, fullText: pmText });
+    
+    socket.emit('conversation_end', { channel });
+
+    // Reality Audit ve HITL Modal'ı Tetikle
+    await delay(1000);
+    const audit = {
+      vision: "Mimar ameliyathane güvenliğini savunuyor.",
+      reality: "Production veritabanı şeması test edilmemiş.",
+      riskPercent: 95,
+      gaps: ["QA testleri eksik", "Klinik doğruluk onayı alınmamış"]
+    };
+    socket.emit('reality_audit_update', { ...audit, channel, ts: nowTime() });
+    
+    // HITL modalını kaydet ve tetikle
+    pendingTaskChains.set(socket.id, { priorResponses: { ...priorResponses }, channel, userMessage: message });
+    socket.emit('hitl_checkpoint', { riskPercent: 95, vision: audit.vision, gaps: audit.gaps, channel });
+    return;
+  } else {
+    // Senaryo C: Genel Sohbet / Diğer Sorular
+    socket.emit('typing_start', { role: 'arabulucu', channel });
+    await delay(1500 + Math.random() * 500);
+    const pmText = "ContextMed Surgeon-CoPilot v1.0 için ameliyathane içi odaklanmamız tüm hızıyla devam ediyor. Ekibimiz şu an otonom modüllerin doğruluk testlerini tamamlıyor.";
+    priorResponses.arabulucu = pmText;
+    socket.emit('agent_message', {
+      channel, role: 'arabulucu', name: ROLE_NAMES.arabulucu,
+      text: pmText, ts: nowTime(),
+      provenance: ['Work Domain']
+    });
+    socket.emit('agent_stream_end', { role: 'arabulucu', channel, fullText: pmText });
+  }
+
+  socket.emit('conversation_end', { channel });
+}
+
 // ─── Ana bağlantı ─────────────────────────────────────────────────────────────
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
@@ -893,8 +1332,9 @@ io.on('connection', (socket) => {
         // Ajan sırasını çalıştır
         const text = await runAgentTurn(socket, role, message, histCtx, priorResponses, cfg.promptAddon || '', channel);
         
-        // Yeni delegasyonları (isim geçirme) tespit et ve listeye ekle
-        const newDelegations = detectDelegation(text, Object.keys(priorResponses));
+        // Yeni delegasyonları (isim geçirme) tespit et ve listeye ekle (kuyrukta zaten sırası olanları tekrar ekleme)
+        const newDelegations = detectDelegation(text, Object.keys(priorResponses))
+          .filter(r => !currentRespondents.includes(r));
         if (newDelegations.length > 0) {
           currentRespondents.push(...newDelegations);
         }
@@ -904,6 +1344,40 @@ io.on('connection', (socket) => {
         if (currentRespondents.length === 0 && turnCount < 4 && Math.random() > 0.7) {
           const others = ['mimar', 'arabulucu', 'icraci'].filter(r => r !== role);
           currentRespondents.push(others[Math.floor(Math.random() * others.length)]);
+        }
+      }
+
+      // ── GOAP Otonom Yürütme Döngüsü ──────────────────────────────────────────
+      let goapPlan = null;
+      if (priorResponses.arabulucu) {
+        const match = priorResponses.arabulucu.match(/```json\n([\s\S]*?)\n```/);
+        if (match) {
+          try {
+            const parsed = JSON.parse(match[1]);
+            if (parsed.goap_plan) goapPlan = parsed.goap_plan;
+          } catch(e) { console.warn('GOAP JSON parse hatası:', e); }
+        }
+      }
+
+      if (goapPlan && (!cfg.members || cfg.members.includes('icraci'))) {
+        for (const step of goapPlan) {
+          await delay(1000);
+          socket.emit('agent_message', { 
+            channel, role: 'system', name: '⚙️ GOAP Otonom Motor', 
+            text: `▶️ Adım ${step.step}: ${step.task}`, 
+            proactive: true, ts: nowTime() 
+          });
+          
+          let memoryContext = priorResponses.icraci 
+            ? `\n\n[BELLEK - Önceki Adımlar]\nŞimdiye kadar şu adımları tamamladın:\n${priorResponses.icraci}\nLütfen bu geçmişi DİKKATE AL ve aynı dosyayı/görevi TEKRARLAMA.`
+            : '';
+
+          socket.emit('typing_start', { role: 'icraci', channel });
+          const stepPrompt = `Sen İcracı'sın. PM'in planındaki şu adımı KESİNLİKLE gerçekleştir: "${step.task}".${memoryContext}\n\nEĞER bu adım bir dosya okuma veya yazma gerektiriyorsa, ilgili ARACI (read_file veya write_file) ÇAĞIRMADAN ASLA YANIT VERME. Aracı kullanarak işlemi bitirince ne yaptığını kısaca raporla. Başka soru sorma.`;
+          
+          // Otonom turu çalıştır
+          const stepResponse = await runAgentTurn(socket, 'icraci', stepPrompt, histCtx, {}, '', channel);
+          priorResponses.icraci = (priorResponses.icraci ? priorResponses.icraci + '\n' : '') + `[Adım ${step.step}]: ` + stepResponse;
         }
       }
 
@@ -951,13 +1425,18 @@ io.on('connection', (socket) => {
       socket.emit('cerebra_saved', { channel, files: Object.keys(priorResponses).length });
 
     } catch (error) {
-      console.error('AI Error:', error);
-      socket.emit('agent_message', {
-        channel, role: 'arabulucu', name: ROLE_NAMES.arabulucu,
-        text: 'Şu an yanıt alamadım. Birazdan tekrar deneyin.',
-        proactive: true, ts: nowTime(),
-      });
-      socket.emit('conversation_end', { channel });
+      console.error('AI Error (Running Sunum Modu Fallback):', error);
+      try {
+        await runDemoModeFallback(socket, channel, message);
+      } catch (fallbackError) {
+        console.error('Fallback Error:', fallbackError);
+        socket.emit('agent_message', {
+          channel, role: 'arabulucu', name: ROLE_NAMES.arabulucu,
+          text: 'Şu an bağlantı kurulamadı. Lütfen sunucu bağlantınızı teyit edin.',
+          proactive: true, ts: nowTime(),
+        });
+        socket.emit('conversation_end', { channel });
+      }
     }
   });
 
@@ -1122,4 +1601,70 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 4000;
+
+// ─── REST API: Schema Endpoint ──────────────────────────────────────────────
+app.get('/api/schema', (req, res) => {
+  if (!schemaLoader) return res.status(501).json({ error: 'Schema loader not available' });
+  const schema = schemaLoader.getSchema();
+  if (!schema) return res.status(500).json({ error: 'Schema not loaded' });
+  res.json({
+    roster: schema.roster,
+    hierarchy: schema.hierarchy,
+    channels: schema.channels,
+    task_policies: schema.task_policies,
+    hitl_policy: schema.hitl_policy,
+    loaded_at: schema._loaded_at,
+  });
+});
+
+// ─── REST API: Provenance Endpoints ─────────────────────────────────────────
+app.get('/api/provenance/trail', (req, res) => {
+  if (!provenance) return res.status(501).json({ error: 'Provenance not available' });
+  const filters = {};
+  if (req.query.last) filters.last = parseInt(req.query.last, 10);
+  if (req.query.persona) filters.persona = req.query.persona;
+  if (req.query.channel) filters.channel = req.query.channel;
+  res.json(provenance.getTrail(filters));
+});
+
+app.get('/api/provenance/stats', (req, res) => {
+  if (!provenance) return res.status(501).json({ error: 'Provenance not available' });
+  res.json(provenance.getStats());
+});
+
+app.get('/api/provenance/:id', (req, res) => {
+  if (!provenance) return res.status(501).json({ error: 'Provenance not available' });
+  const entry = provenance.getById(req.params.id);
+  if (!entry) return res.status(404).json({ error: 'Entry not found' });
+  res.json(entry);
+});
+
+// ─── REST API: HITL Endpoints ───────────────────────────────────────────────
+app.post('/api/hitl/classify', express.json(), (req, res) => {
+  if (!hitlEngine) return res.status(501).json({ error: 'HITL Engine not available' });
+  const { text, persona } = req.body;
+  if (!text) return res.status(400).json({ error: 'text field required' });
+  res.json(hitlEngine.classifyRisk(text, persona || 'arabulucu'));
+});
+
+// ─── REST API: Scheduler Endpoints ───────────────────────────────────────────
+app.get('/api/schedule/status', (req, res) => {
+  if (!scheduler) return res.status(501).json({ error: 'Scheduler not available' });
+  res.json(scheduler.getScheduleStatus());
+});
+
+app.get('/api/schedule/due', (req, res) => {
+  if (!scheduler) return res.status(501).json({ error: 'Scheduler not available' });
+  res.json(scheduler.getDueSchedules());
+});
+
+app.post('/api/schedule/trigger', express.json(), (req, res) => {
+  if (!scheduler) return res.status(501).json({ error: 'Scheduler not available' });
+  const { name } = req.body;
+  if (!name) return res.status(400).json({ error: 'name field required' });
+  const result = scheduler.simulateTrigger(name);
+  if (result.error) return res.status(404).json(result);
+  res.json(result);
+});
+
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

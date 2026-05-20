@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-19-004",
+  "timestamp": "2026-05-19T23:28:08.686Z",
+  "persona": "arabulucu",
+  "channel": "#strateji",
+  "input_hash": "sha256:e1e32c5a7df9",
+  "input_preview": "Rakibimiz MedAI yeni bir AI özelliği lansmanı yaptı. Bizim yol haritamızı nasıl değiştirmeliyiz?",
+  "output_preview": "",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 35
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 0
+}

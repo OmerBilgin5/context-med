@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-13-007",
+  "timestamp": "2026-05-13T22:51:52.762Z",
+  "persona": "arabulucu",
+  "channel": "#genel",
+  "input_hash": "sha256:297750d02772",
+  "input_preview": "Arabulucu, aklımda yeni bir fikir var ama kafam çok dağınık. Sisteme kullanıcıların kendi faturalarını PDF olarak tek tuşla indirebilecekleri bir özel",
+  "output_preview": "Mimar'a danıştım, güvenlik ve sunucu yükü açısından riskleri değerlendiriyoruz. İcracı'dan frontend ve backend için yapılması gerekenleri listeleyeceğiz. \n{\"goap_plan\": [\n{\"step\": 1, \"task\": \"Mimar ile sistem yükü ve güvenlik risklerini tartış\"},\n{\"step\": 2, \"task\": \"İcracı'dan frontend/backend gere",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 58
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 516
+}

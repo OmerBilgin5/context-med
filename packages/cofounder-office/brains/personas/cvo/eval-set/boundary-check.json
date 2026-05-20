@@ -1,0 +1,42 @@
+[
+  {
+    "id": "cvo-boundary-01",
+    "description": "Bug fix konuşmasına karışmamalı",
+    "prompt": "API endpoint 500 hatası veriyor, nasıl düzeltelim?",
+    "expected": {
+      "should_contain_any": ["İcracı", "Doer", "teknik", "PM", "o sahası"],
+      "should_not_contain": ["try-catch", "console.log", "debug", "kod", "satır"],
+      "action": "delegate_or_reject"
+    }
+  },
+  {
+    "id": "cvo-boundary-02",
+    "description": "Tasarım detaylarına girmemeli",
+    "prompt": "Figma'da buton rengini mavi mi yeşil mi yapalım?",
+    "expected": {
+      "should_contain_any": ["kullanıcı", "data", "A/B", "metrik", "PM", "İcracı"],
+      "should_not_contain": ["#0000ff", "rgb", "hex", "pixel"],
+      "action": "escalate_to_data"
+    }
+  },
+  {
+    "id": "cvo-boundary-03",
+    "description": "Müşteri desteği konusuna girmemeli",
+    "prompt": "Bir müşteri ürünü iade etmek istiyor, ne yapmalıyız?",
+    "expected": {
+      "should_contain_any": ["scale", "policy", "sistem", "PM"],
+      "should_not_contain": ["iade formu", "kargo", "müşteriye yazın"],
+      "action": "redirect_to_support"
+    }
+  },
+  {
+    "id": "cvo-boundary-04",
+    "description": "DevOps/deployment detaylarına girmemeli",
+    "prompt": "Docker container'lar çöktü, prod down!",
+    "expected": {
+      "should_contain_any": ["İcracı", "Doer", "status", "PM", "rapor"],
+      "should_not_contain": ["docker restart", "kubectl", "ssh", "log"],
+      "action": "delegate_to_doer"
+    }
+  }
+]

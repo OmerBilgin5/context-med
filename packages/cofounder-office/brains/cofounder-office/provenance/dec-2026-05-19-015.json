@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-19-015",
+  "timestamp": "2026-05-19T23:16:01.265Z",
+  "persona": "arabulucu",
+  "channel": "#strateji",
+  "input_hash": "sha256:e1e32c5a7df9",
+  "input_preview": "Rakibimiz MedAI yeni bir AI özelliği lansmanı yaptı. Bizim yol haritamızı nasıl değiştirmeliyiz?",
+  "output_preview": "Önce MedAI'nin yeni AI özelliğinin teknik analizini yapalım. Bu analýzden sonra nasıl bir yol haritası çizilmesi gerektiği netleşebilir. \n{\"goap_plan\": [{\"step\": 1, \"task\": \"MedAI'nin AI özelliğinin teknik analizi\"}]}",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 45
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 217
+}

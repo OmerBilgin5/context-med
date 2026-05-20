@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-19-005",
+  "timestamp": "2026-05-19T23:28:12.526Z",
+  "persona": "mimar",
+  "channel": "#strateji",
+  "input_hash": "sha256:e1e32c5a7df9",
+  "input_preview": "Rakibimiz MedAI yeni bir AI özelliği lansmanı yaptı. Bizim yol haritamızı nasıl değiştirmeliyiz?",
+  "output_preview": "Buna ihtiyacımız bu kadar mı? Neyin farklı? Nereye gidiyoruz, ne yapmak istiyorsunuz?",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md",
+    "personas/cvo/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 75
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 85
+}

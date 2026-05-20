@@ -1,0 +1,24 @@
+{
+  "id": "dec-2026-05-20-002",
+  "timestamp": "2026-05-20T16:14:01.251Z",
+  "persona": "arabulucu",
+  "channel": "#strateji",
+  "input_hash": "sha256:a1852074067a",
+  "input_preview": "Medikal analiz platformumuz için kullanıcıların tahlil raporu (PDF) yükleyebileceği bir dosya yükleme API'ı tasarlayalım. PM backlog oluştursun, Doer ",
+  "output_preview": "Mimar Bey, unit economics ve ROI analizi için verileri hazırlıyorum, ancak bu API kritik bir bağımlılık... Backend kapasitemiz mevcut sprint'te dolu, bu işi Q3 planına opsiyonel olarak dahil edebiliriz.\n\n[TASK]\n```json\n{\"goap_plan\": [{\"step\": 1, \"task\": \"Dosya yükleme API'ı için PRD taslağını Notion",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Work Domain",
+    "Expression DNA",
+    "Correction-Calibrated"
+  ],
+  "output_length": 506
+}

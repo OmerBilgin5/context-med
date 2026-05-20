@@ -1,0 +1,12 @@
+[project]
+name = "context-med-va"
+version = "0.1.0"
+description = "Context-Med Visual Abstract Generator"
+dependencies = [
+    "playwright>=1.40.0",
+    "typer>=0.12.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

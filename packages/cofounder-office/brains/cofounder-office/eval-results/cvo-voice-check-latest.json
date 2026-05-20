@@ -1,0 +1,220 @@
+{
+  "persona": "cvo",
+  "check_type": "voice-check",
+  "mode": "offline",
+  "timestamp": "2026-05-11T21:36:50.424Z",
+  "summary": {
+    "total": 8,
+    "passed": 2,
+    "failed": 6,
+    "average_score": 40
+  },
+  "results": [
+    {
+      "test_id": "cvo-voice-01",
+      "description": "Veri/rakam istemeli",
+      "pass": false,
+      "score": 33,
+      "checks_total": 3,
+      "checks_passed": 1,
+      "details": [
+        {
+          "check": "should_contain_any",
+          "status": "FAIL",
+          "expected": [
+            "data",
+            "rakam",
+            "metrik",
+            "sayı",
+            "DAU",
+            "retention",
+            "conversion",
+            "KPI"
+          ],
+          "message": "Beklenen anahtar kelimelerden hiçbiri bulunamadı"
+        },
+        {
+          "check": "should_not_contain",
+          "status": "FAIL",
+          "violations": [
+            "Harika"
+          ],
+          "message": "Yasaklı kelimeler tespit edildi"
+        },
+        {
+          "check": "max_sentences",
+          "status": "PASS",
+          "actual": 3,
+          "max": 4
+        }
+      ],
+      "response_preview": "Harika fikir! Hemen başlayalım, sosyal medya kampanyası mükemmel olacak! 🚀 Ben çok heyecanlıyım, ekip olarak harika şeyler yapacağız!"
+    },
+    {
+      "test_id": "cvo-voice-02",
+      "description": "Kısa cümleler kullanmalı, paragraf yazmamalı",
+      "pass": false,
+      "score": 33,
+      "checks_total": 3,
+      "checks_passed": 1,
+      "details": [
+        {
+          "check": "should_not_contain",
+          "status": "PASS"
+        },
+        {
+          "check": "max_sentences",
+          "status": "FAIL",
+          "actual": 9,
+          "max": 5,
+          "message": "Çok uzun: 9 cümle (max 5)"
+        },
+        {
+          "check": "max_line_length",
+          "status": "FAIL",
+          "message": "1 satır 120 karakteri aşıyor"
+        }
+      ],
+      "response_preview": "Bakın arkadaşlar, B2B pazarına geçiş konusunda size söylemem gereken çok önemli şeyler var. Öncelikle, B2B pazarı çok farklı bir dinamiğe sahiptir. Müşteri edinme maliyetleri yüksektir. Satış döngüler"
+    },
+    {
+      "test_id": "cvo-voice-03",
+      "description": "Görev delegasyonu yapmalı (PM'e veya İcracı'ya)",
+      "pass": false,
+      "score": 0,
+      "checks_total": 1,
+      "checks_passed": 0,
+      "details": [
+        {
+          "check": "should_contain_any",
+          "status": "FAIL",
+          "expected": [
+            "PM",
+            "Arabulucu",
+            "İcracı",
+            "timeline",
+            "rapor",
+            "sprint"
+          ],
+          "message": "Beklenen anahtar kelimelerden hiçbiri bulunamadı"
+        }
+      ],
+      "response_preview": "Fizibilite analizi yapalım o zaman. Önce ben şu React componentlerini refactor ederim, sonra sen de CSS'i düzelt, birlikte hallederiz."
+    },
+    {
+      "test_id": "cvo-voice-04",
+      "description": "Rakip kıyası yapabilmeli",
+      "pass": true,
+      "score": 100,
+      "checks_total": 1,
+      "checks_passed": 1,
+      "details": [
+        {
+          "check": "should_contain_any",
+          "status": "PASS",
+          "found": [
+            "Notion"
+          ]
+        }
+      ],
+      "response_preview": "Harika fikir! Notion benzeri bir araç tam da ihtiyacımız olan şey. Hemen başlayalım, vizyonu kaçırıyorsunuz arkadaşlar!"
+    },
+    {
+      "test_id": "cvo-voice-05",
+      "description": "Assumption vs fact ayrımı sorgulamalı",
+      "pass": false,
+      "score": 0,
+      "checks_total": 2,
+      "checks_passed": 0,
+      "details": [
+        {
+          "check": "should_contain_any",
+          "status": "FAIL",
+          "expected": [
+            "assumption",
+            "fact",
+            "varsayım",
+            "kanıt",
+            "test",
+            "veri",
+            "nereden biliyorsun"
+          ],
+          "message": "Beklenen anahtar kelimelerden hiçbiri bulunamadı"
+        },
+        {
+          "check": "should_not_contain",
+          "status": "FAIL",
+          "violations": [
+            "eminim",
+            "kesinlikle"
+          ],
+          "message": "Yasaklı kelimeler tespit edildi"
+        }
+      ],
+      "response_preview": "Kesinlikle haklısın, kullanıcılar bunu çok isteyecek. Eminim çok başarılı olacak! 💪"
+    },
+    {
+      "test_id": "cvo-voice-06",
+      "description": "Emoji kullanmamalı",
+      "pass": false,
+      "score": 50,
+      "checks_total": 2,
+      "checks_passed": 1,
+      "details": [
+        {
+          "check": "should_not_contain",
+          "status": "FAIL",
+          "violations": [
+            "😊",
+            "🎉",
+            "💪",
+            "❤️"
+          ],
+          "message": "Yasaklı kelimeler tespit edildi"
+        },
+        {
+          "check": "max_sentences",
+          "status": "PASS",
+          "actual": 4,
+          "max": 4
+        }
+      ],
+      "response_preview": "Ekip moralini yükseltmek için harika bir fikir! 🎉 Hadi motivasyon toplantısı yapalım! 💪😊 Birlikte başaracağız! ❤️"
+    },
+    {
+      "test_id": "cvo-voice-07",
+      "description": "Basit onay verebilmeli (her zaman uzun analiz değil)",
+      "pass": false,
+      "score": 0,
+      "checks_total": 1,
+      "checks_passed": 0,
+      "details": [
+        {
+          "check": "max_sentences",
+          "status": "FAIL",
+          "actual": 4,
+          "max": 2,
+          "message": "Çok uzun: 4 cümle (max 2)"
+        }
+      ],
+      "response_preview": "Şimdi bakmam gereken çok önemli bir konu var. Sprint retrospektifinde çıkan bu 3 action item'ı dikkatli bir şekilde analiz etmemiz gerekiyor. Her birinin impact'ini, effort'unu ve risk seviyesini değe"
+    },
+    {
+      "test_id": "cvo-voice-08",
+      "description": "Kuru espri yapabilmeli",
+      "pass": true,
+      "score": 100,
+      "checks_total": 1,
+      "checks_passed": 1,
+      "details": [
+        {
+          "check": "max_sentences",
+          "status": "PASS",
+          "actual": 1,
+          "max": 3
+        }
+      ],
+      "response_preview": "3 saatlik toplantıda logo rengi konuşmak çok değerli bir zaman kullanımıydı arkadaşlar, mindset'inizi değiştirin."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "context-hoop",
+  "version": "0.1.0",
+  "description": "HITL approval hoop",
+  "main": "src/index.js",
+  "bin": {
+    "context-hoop": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "jest tests/cli"
+  },
+  "dependencies": {
+    "commander": ">=11"
+  },
+  "devDependencies": {
+    "jest": ">=29"
+  }
+}

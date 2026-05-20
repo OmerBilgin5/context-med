@@ -1,0 +1,18 @@
+{
+  "name": "context-slides",
+  "version": "0.1.0",
+  "description": "Presentation slide generator",
+  "main": "src/index.js",
+  "bin": {
+    "context-slides": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "jest tests/cli"
+  },
+  "dependencies": {
+    "commander": ">=11"
+  },
+  "devDependencies": {
+    "jest": ">=29"
+  }
+}
