@@ -41,3 +41,15 @@ hitl_policy:
   risk_class: "high"
   checkpoint: "always"
   description: "Any task involving financial impact, external publishing, or core architecture changes requires user approval."
+
+cron:
+  - schedule: "daily_standup"
+    trigger: "arabulucu"
+    task: "Dünkü ilerlemeyi özetle ve bugünkü planı çıkar."
+    interval_hours: 24
+    channel: "#genel"
+  - schedule: "weekly_review"
+    trigger: "mimar"
+    task: "Haftalık stratejik değerlendirme: Bu hafta ne karar alındı?"
+    interval_hours: 168
+    channel: "#strateji"

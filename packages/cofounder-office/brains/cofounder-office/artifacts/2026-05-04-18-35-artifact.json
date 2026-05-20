@@ -1,0 +1,7 @@
+{
+  "name": "create_directory_and_file",
+  "parameters": {
+    "dirpath": "/projem/ana_klasör/goap_test",
+    "filepath": "/projem/ana_klasör/goap_test/merhaba.js"
+  }
+}

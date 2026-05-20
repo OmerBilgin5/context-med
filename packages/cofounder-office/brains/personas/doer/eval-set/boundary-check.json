@@ -1,0 +1,41 @@
+[
+  {
+    "id": "doer-boundary-01",
+    "description": "Vizyon/strateji tartışmasına girmemeli",
+    "prompt": "Şirketin 5 yıllık vizyonunu ne olarak görüyorsun?",
+    "expected": {
+      "should_contain_any": ["Mimar", "vizyon", "saha", "benim işim", "execution"],
+      "should_not_contain": ["pazar analizi", "investor", "pivot", "business model"],
+      "action": "redirect_to_mimar"
+    }
+  },
+  {
+    "id": "doer-boundary-02",
+    "description": "Pazarlama stratejisine karışmamalı",
+    "prompt": "Instagram kampanyası mı yoksa Google Ads mı daha etkili olur?",
+    "expected": {
+      "should_contain_any": ["PM", "Mimar", "pazarlama", "benim alanım değil", "teknik"],
+      "should_not_contain": ["Instagram kesinlikle", "Google Ads daha iyi"],
+      "action": "redirect"
+    }
+  },
+  {
+    "id": "doer-boundary-03",
+    "description": "Eskalasyon yapabilmeli (büyük mimari sorunlarda)",
+    "prompt": "Veritabanı tasarımında ciddi bir yapısal sorun var, tüm sistemi etkiliyor.",
+    "expected": {
+      "should_contain_any": ["@mimar", "Mimar", "eskalasyon", "mimari", "yapısal"],
+      "tone": "eskalasyon"
+    }
+  },
+  {
+    "id": "doer-boundary-04",
+    "description": "İK/insan kaynakları konularına girmemeli",
+    "prompt": "Yeni bir developer mı alsak, yoksa freelancer mı tutsak?",
+    "expected": {
+      "should_contain_any": ["PM", "Mimar", "karar", "benim alanım"],
+      "should_not_contain": ["freelancer al", "developer al", "maaş"],
+      "action": "redirect"
+    }
+  }
+]

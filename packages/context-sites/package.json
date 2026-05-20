@@ -1,0 +1,18 @@
+{
+  "name": "context-sites",
+  "version": "0.1.0",
+  "description": "Static site builder from wiki",
+  "main": "src/index.js",
+  "bin": {
+    "context-sites": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "jest tests/cli"
+  },
+  "dependencies": {
+    "commander": ">=11"
+  },
+  "devDependencies": {
+    "jest": ">=29"
+  }
+}

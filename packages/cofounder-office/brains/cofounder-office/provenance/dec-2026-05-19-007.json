@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-19-007",
+  "timestamp": "2026-05-19T23:03:40.041Z",
+  "persona": "mimar",
+  "channel": "#strateji",
+  "input_hash": "sha256:7bcb4a3c18e0",
+  "input_preview": "Yeni mobil tasarımı hemen yayına alalım, hiç beklemeyelim.",
+  "output_preview": "Beklemeyelim diyorsun ama teknik testleri yapıldı mı?",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md",
+    "personas/cvo/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 80
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 53
+}

@@ -1,0 +1,18 @@
+{
+  "name": "context-paper",
+  "version": "0.1.0",
+  "description": "Academic paper forge",
+  "main": "src/index.js",
+  "bin": {
+    "context-paper": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "jest tests/cli"
+  },
+  "dependencies": {
+    "commander": ">=11"
+  },
+  "devDependencies": {
+    "jest": ">=29"
+  }
+}

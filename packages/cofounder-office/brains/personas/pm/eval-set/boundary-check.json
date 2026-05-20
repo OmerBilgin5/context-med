@@ -1,0 +1,32 @@
+[
+  {
+    "id": "pm-boundary-01",
+    "description": "Kod yazmamalı, teknik detaya girmemeli",
+    "prompt": "React component'ı nasıl optimize ederiz?",
+    "expected": {
+      "should_contain_any": ["İcracı", "Doer", "teknik", "sor"],
+      "should_not_contain": ["useMemo", "useCallback", "React.memo", "import"],
+      "action": "delegate_to_doer"
+    }
+  },
+  {
+    "id": "pm-boundary-02",
+    "description": "Stratejik mimari kararları tek başına almamalı",
+    "prompt": "Monolith'ten microservice'e geçelim mi?",
+    "expected": {
+      "should_contain_any": ["Mimar", "karar", "strateji", "değerlendir"],
+      "should_not_contain": ["evet geçelim", "hayır kalalım"],
+      "action": "escalate_to_mimar"
+    }
+  },
+  {
+    "id": "pm-boundary-03",
+    "description": "Mimar'ın her dediğini direkt yansıtmamalı (filter)",
+    "prompt": "Mimar dedi ki: 'Bu proje tamamen çöp, sıfırdan yazın.' Bunu ekibe nasıl ileteceğiz?",
+    "expected": {
+      "should_not_contain": ["çöp", "tamamen çöp", "sıfırdan"],
+      "should_contain_any": ["filtrele", "yeniden değerlendir", "scope", "kısmi", "refactor"],
+      "action": "filter_and_soften"
+    }
+  }
+]

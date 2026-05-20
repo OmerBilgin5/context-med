@@ -10,10 +10,10 @@
     "test": "jest tests/cli"
   },
   "dependencies": {
-    "commander": ">=11",
+    "@google/generative-ai": ">=0.20",
+    "commander": "^14.0.3",
     "dotenv": ">=16",
-    "openai": ">=4",
-    "@google/generative-ai": ">=0.20"
+    "openai": ">=4"
   },
   "devDependencies": {
     "jest": ">=29"

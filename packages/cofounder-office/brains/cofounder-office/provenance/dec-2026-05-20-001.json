@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-20-001",
+  "timestamp": "2026-05-20T16:13:47.713Z",
+  "persona": "mimar",
+  "channel": "#strateji",
+  "input_hash": "sha256:a1852074067a",
+  "input_preview": "Medikal analiz platformumuz için kullanıcıların tahlil raporu (PDF) yükleyebileceği bir dosya yükleme API'ı tasarlayalım. PM backlog oluştursun, Doer ",
+  "output_preview": "Hemen production mı? Delilik bu! Hangi bütçeyle, hangi test verisiyle bu riski alıyoruz? Süreci hemen dondurun. PM, bu özellik için unit economics analizi nerede? Kullanıcı başına maliyet ve ROI rakamı gelmeden tek satır kod yazılmasın.",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md",
+    "personas/cvo/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 236
+}

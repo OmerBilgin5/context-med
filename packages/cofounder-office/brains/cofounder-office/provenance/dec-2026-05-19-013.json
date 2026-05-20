@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-19-013",
+  "timestamp": "2026-05-19T23:15:53.685Z",
+  "persona": "mimar",
+  "channel": "#strateji",
+  "input_hash": "sha256:e1e32c5a7df9",
+  "input_preview": "Rakibimiz MedAI yeni bir AI özelliği lansmanı yaptı. Bizim yol haritamızı nasıl değiştirmeliyiz?",
+  "output_preview": "Önce rakip analizi yapalım. MedAI'nin bu hamlesi bize ne gibi avantaj veya dezavantajlar sağlıyor? \n\nPM,Competitor intelligence raporu çıkar ve beni bilgilendirsin.",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md",
+    "personas/cvo/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 75
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 164
+}

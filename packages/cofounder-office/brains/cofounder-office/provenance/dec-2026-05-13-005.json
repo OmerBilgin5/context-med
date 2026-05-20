@@ -1,0 +1,21 @@
+{
+  "id": "dec-2026-05-13-005",
+  "timestamp": "2026-05-13T22:51:46.692Z",
+  "persona": "mimar",
+  "channel": "#genel",
+  "input_hash": "sha256:297750d02772",
+  "input_preview": "Arabulucu, aklımda yeni bir fikir var ama kafam çok dağınık. Sisteme kullanıcıların kendi faturalarını PDF olarak tek tuşla indirebilecekleri bir özel",
+  "output_preview": "Görevi PM'ye veriyorum. PRD ve GOAP planı istiyorum, kullanıcıların PDF fatura indirmesi için. Güvenlik ve sunucu yükü açısından riskler neler? Mimar'a: Güvenlik ve ölçeklenebilirlik açısından riskler neler? İcracı: Tablolar hazır, ama Mimar'ın görüşünü bekliyorum. PM, durumu bir raporlama sistemi i",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 66
+  },
+  "provenance_tags": [
+    "Work Domain"
+  ],
+  "output_length": 300
+}

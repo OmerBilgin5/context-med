@@ -1,1 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment variables (API keys - NEVER commit to public repo)
+.env
+
+# Python cache
+__pycache__/
+*.egg-info/
+*.pyc
+
+# Temp & test output
 tmp/
+tmp-test-output/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,8 @@
+journal: "JAMA"
+visual_abstract:
+  layout: "pico-grid"
+  colors:
+    primary: "#003CBD"
+    secondary: "#19C480"
+  fonts:
+    primary: "Inter"

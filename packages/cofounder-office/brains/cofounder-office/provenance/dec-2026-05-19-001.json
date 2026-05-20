@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-19-001",
+  "timestamp": "2026-05-19T23:27:22.497Z",
+  "persona": "arabulucu",
+  "channel": "#operasyon",
+  "input_hash": "sha256:e1e32c5a7df9",
+  "input_preview": "Rakibimiz MedAI yeni bir AI özelliği lansmanı yaptı. Bizim yol haritamızı nasıl değiştirmeliyiz?",
+  "output_preview": "**Önce rakip analizi yapalım**: MedAI'nın bu özellikten ne gibi avantaj veya dezavantajlar sağlayacağını analiz edelim.\n\n **Analogi ile yaklaşalım**:  Bu özellik, bizim bugüne kadarki yol haritamızı değiştirir mi? Eğer evet ise, hangi işlemlere ihtiyacımız olduğunu ve olası riskleri değerlendirelim.",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 65
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 360
+}

@@ -1,0 +1,8 @@
+[project]
+name = "context-med"
+version = "0.1.0"
+description = "Context-Med Monorepo"
+requires-python = ">=3.11"
+
+[tool.uv.workspace]
+members = ["packages/*"]

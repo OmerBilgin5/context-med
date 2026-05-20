@@ -1,0 +1,18 @@
+{
+  "name": "context-sim",
+  "version": "0.1.0",
+  "description": "Clinical simulation compiler",
+  "main": "src/index.js",
+  "bin": {
+    "context-sim": "./bin/cli.js"
+  },
+  "scripts": {
+    "test": "jest tests/cli"
+  },
+  "dependencies": {
+    "commander": ">=11"
+  },
+  "devDependencies": {
+    "jest": ">=29"
+  }
+}
