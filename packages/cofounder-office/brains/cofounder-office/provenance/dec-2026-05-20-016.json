@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-20-016",
+  "timestamp": "2026-05-20T23:42:03.794Z",
+  "persona": "icraci",
+  "channel": "#genel",
+  "input_hash": "sha256:69c8efcec78f",
+  "input_preview": "Hemen deploy edebileceğimiz bir mobile app lazım",
+  "output_preview": "Mobil geliştirme benim saham değil, bu iş için ayrı bir uzman lazım. Backend tarafında API'ları hazırlarım ama mobil UI/UX için farklı birine yönlendirmen gerekir. Hangi platform için, neyin MVP'sini çıkaracağız?",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 212
+}

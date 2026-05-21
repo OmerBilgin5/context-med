@@ -1,0 +1,24 @@
+{
+  "id": "dec-2026-05-21-026",
+  "timestamp": "2026-05-21T00:32:31.974Z",
+  "persona": "arabulucu",
+  "channel": "#strateji",
+  "input_hash": "sha256:c7af13fca286",
+  "input_preview": "Ekip; sunucuda ciddi yavaşlık şikayetleri alıyoruz. PM (Arabulucu), lütfen süreci koordine et ve İcracı'ya yerel diskteki 'sistem_analizi.txt' dosyası",
+  "output_preview": "Mimar Bey, sunucudaki yük artışı birim ekonomisini doğrudan etkiliyor, bu yüzden veriye dayalı ilerlememiz şart. İcracı, #operasyon kanalına geçip 'sistem_analizi.txt' dosyasını incele ve bulguları Mimar Bey ile hemen paylaş... Süreci kontrolüm altında tutuyorum, plan aşağıdadır.\n\n```json\n{\n  \"goap_",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 40
+  },
+  "provenance_tags": [
+    "Work Domain",
+    "Expression DNA",
+    "Correction-Calibrated"
+  ],
+  "output_length": 612
+}

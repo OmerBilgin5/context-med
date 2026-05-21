@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-20-019",
+  "timestamp": "2026-05-20T23:42:48.552Z",
+  "persona": "icraci",
+  "channel": "#genel",
+  "input_hash": "sha256:69c8efcec78f",
+  "input_preview": "Hemen deploy edebileceğimiz bir mobile app lazım",
+  "output_preview": "Mobil için şu an elimizde hazır bir codebase veya ekip yok, sıfırdan başlamak prod seviyesinde risklidir. Native yerine backend'e bağlı basit bir PWA ile süreci hızlandırabiliriz, bu da eforu %40 düşürür. Teknik onayı veriyorsanız hemen prototip aşamasına geçebilirim.",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 268
+}

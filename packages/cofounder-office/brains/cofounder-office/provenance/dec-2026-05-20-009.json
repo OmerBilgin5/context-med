@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-20-009",
+  "timestamp": "2026-05-20T23:37:25.526Z",
+  "persona": "icraci",
+  "channel": "#genel",
+  "input_hash": "sha256:6836fff84e0f",
+  "input_preview": "Sen İcracı'sın. PM'in planındaki şu adımı KESİNLİKLE gerçekleştir: \"Mimarın istediği latency verilerini ve TensorRT geçişinin maliyet analizini Notion",
+  "output_preview": "`latency_data.json` ve `trt_migration_cost.md` dosyalarını okumaya başlıyorum. Analizi yapıp Notion içeriğini hazırlayacağım.\n\n[read_file(path=\"latency_data.json\"), read_file(path=\"trt_migration_cost.md\")]",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 70
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 205
+}

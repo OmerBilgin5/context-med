@@ -1,11 +1,11 @@
 {
-  "id": "dec-2026-05-20-001",
-  "timestamp": "2026-05-20T23:30:07.701Z",
+  "id": "dec-2026-05-20-003",
+  "timestamp": "2026-05-20T23:30:49.768Z",
   "persona": "mimar",
   "channel": "#strateji",
   "input_hash": "sha256:22b64a5b23b8",
   "input_preview": "Ekip; bütçe kısıtlarıyla Surgeon-CoPilot'ın ilk lansmanını yapmak istiyoruz. Bütçeyi aşmadan ilk 100 cerraha ulaşmak için dijital pazarlama kanalların",
-  "output_preview": "Dijital pazarlama ölçeklenir, kongre ise tek seferlik bir tüketim. Kongre ROI'si nedir? PM, ilk 100 kullanıcı için CAC hesabını çıkart. Kongre maliyeti ile karşılaştır.",
+  "output_preview": "Kongre prestij mi, illüzyon mu? Stand açmak sadece vanity metric toplar, conversion odaklı değil. PM, dijital kanallardaki hedef kitle segmentasyon verisi nerede? Kongreye harcanacak bütçeyi dijitale kaydırırsak %10x büyüme garantisi veriyor musun? İcracı, stand kurulumundaki operasyonel yükün saat ",
   "brain_reads": [
     "personas/cvo/persona.md",
     "personas/cvo/work.md",
@@ -13,10 +13,11 @@
   ],
   "hitl_status": "auto",
   "eval_score": {
-    "fidelity_score": 100
+    "fidelity_score": 70
   },
   "provenance_tags": [
+    "Decision Heuristics",
     "Correction-Calibrated"
   ],
-  "output_length": 168
+  "output_length": 482
 }

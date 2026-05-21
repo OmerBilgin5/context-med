@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-21-027",
+  "timestamp": "2026-05-21T00:32:46.863Z",
+  "persona": "icraci",
+  "channel": "#strateji",
+  "input_hash": "sha256:579440a5ed97",
+  "input_preview": "Sen İcracı'sın. PM'in planındaki şu adımı KESİNLİKLE gerçekleştir: \"İcracı, sistem_analizi.txt dosyasını oku.\".\n\nEĞER bu adım bir dosya okuma veya yaz",
+  "output_preview": "read_file(file_path=\"sistem_analizi.txt\")",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 40
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 41
+}

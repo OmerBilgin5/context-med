@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-20-022",
+  "timestamp": "2026-05-20T23:44:49.106Z",
+  "persona": "mimar",
+  "channel": "#genel",
+  "input_hash": "sha256:86af309fa624",
+  "input_preview": "Rakip firma mobile oyun çıkarmış bizim de hemen bir mobil oyun çıkarmamız lazım.",
+  "output_preview": "Rakip firma 2018'de benzer bir hamle yaptı, şu an nerede? Hangi data, mobil oyunun bizim unit economics'imizi koruyacağını gösteriyor? PM, bu talebin ROI analizini yarın sabah masama bıraksın. Sadece fikirle iş yapmıyoruz.",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md",
+    "personas/cvo/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 222
+}

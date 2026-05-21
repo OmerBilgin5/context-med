@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-21-025",
+  "timestamp": "2026-05-21T00:32:17.751Z",
+  "persona": "mimar",
+  "channel": "#strateji",
+  "input_hash": "sha256:c7af13fca286",
+  "input_preview": "Ekip; sunucuda ciddi yavaşlık şikayetleri alıyoruz. PM (Arabulucu), lütfen süreci koordine et ve İcracı'ya yerel diskteki 'sistem_analizi.txt' dosyası",
+  "output_preview": "Hemen production mı? Delilik bu! Hangi bütçeyle, hangi test verisiyle bu riski alıyoruz? Süreci hemen dondurun. PM, teknik status raporu nerede? Bu yavaşlığın unit economics üzerindeki maliyet kaybı ne kadar?",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md",
+    "personas/cvo/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 55
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 208
+}

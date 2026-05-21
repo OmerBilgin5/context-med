@@ -1,11 +1,11 @@
 {
-  "id": "dec-2026-05-20-002",
-  "timestamp": "2026-05-20T23:30:40.774Z",
+  "id": "dec-2026-05-20-004",
+  "timestamp": "2026-05-20T23:31:04.276Z",
   "persona": "arabulucu",
   "channel": "#strateji",
   "input_hash": "sha256:22b64a5b23b8",
   "input_preview": "Ekip; bütçe kısıtlarıyla Surgeon-CoPilot'ın ilk lansmanını yapmak istiyoruz. Bütçeyi aşmadan ilk 100 cerraha ulaşmak için dijital pazarlama kanalların",
-  "output_preview": "Kongre standı markayı konumlandırır ancak 100 kullanıcı için yüksek maliyetli ve operasyonel olarak ağır bir yük... Dijital pazarlama ile hedef kitleye daha hızlı ve kontrollü ulaşabiliriz.\n\n[TASK]: CAC/ROI analizi için bir karşılaştırma raporu hazırlıyorum.\n\n```json\n{\"goap_plan\": [{\"step\": 1, \"task",
+  "output_preview": "Mimar, kongre prestiji bir vanity metrik; ancak dijitalde ilk 100 kullanıcıyı CAC optimizasyonuyla kazanmak runway'imizi %40 korur. Kongre eforunu ürünü geliştirmeye kaydırmak, ilk cerrahların deneyimini garantilemek için daha rasyonel bir yatırım... İcracı, dijital dönüşüm için gereken teknik segme",
   "brain_reads": [
     "personas/pm/persona.md",
     "personas/pm/work.md",
@@ -18,5 +18,5 @@
   "provenance_tags": [
     "Correction-Calibrated"
   ],
-  "output_length": 475
+  "output_length": 562
 }

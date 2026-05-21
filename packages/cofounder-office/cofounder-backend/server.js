@@ -789,7 +789,7 @@ async function runAgentTurn(socket, role, message, histCtx, priorResponses, chan
 
     const rawText = await getAIResponse(messages);
     const parts = rawText.split(/\n?---\n?/).map(p => p.trim()).filter(Boolean);
-    priorResponses.mimar = parts.join(' ').substring(0, 300);
+    priorResponses.mimar = parts.join(' ').substring(0, 1000);
 
     for (let i = 0; i < parts.length; i++) {
       if (i === 0) {
@@ -875,7 +875,7 @@ async function runAgentTurn(socket, role, message, histCtx, priorResponses, chan
     pmNote = priv.trim();
   }
 
-  priorResponses[role] = cleanText.substring(0, 300);
+  priorResponses[role] = cleanText.substring(0, 1000);
 
   // İcracı: kod bloğu varsa artifact olarak kaydet
   if (role === 'icraci') {

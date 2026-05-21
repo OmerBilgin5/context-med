@@ -1,0 +1,23 @@
+{
+  "id": "dec-2026-05-21-030",
+  "timestamp": "2026-05-21T00:33:10.530Z",
+  "persona": "icraci",
+  "channel": "#strateji",
+  "input_hash": "sha256:54a68c1ad31c",
+  "input_preview": "Sen İcracı'sın. PM'in planındaki şu adımı KESİNLİKLE gerçekleştir: \"PM, stratejik kararı Sprint planına işle.\".\n\n[BELLEK - Önceki Adımlar]\nŞimdiye kad",
+  "output_preview": "{\"action\": \"write_file\", \"action_input\": \"{ \\\"file_path\\\": \\\"sprint_plan.md\\\", \\\"content\\\": \\\"# Sprint Plan Güncellemesi\\\\n- Stratejik karar: De-identification zorunlu.\\\\n- RBAC ve veri anonimleştirme süreçleri eklendi.\\\\n- Risk yönetimi: Production deploy öncesi test verisi onayı şart.\\\" }\", \"thoug",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 70
+  },
+  "provenance_tags": [
+    "Work Domain",
+    "Correction-Calibrated"
+  ],
+  "output_length": 481
+}
