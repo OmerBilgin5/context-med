@@ -1,0 +1,23 @@
+{
+  "id": "dec-2026-05-20-010",
+  "timestamp": "2026-05-20T23:37:52.878Z",
+  "persona": "icraci",
+  "channel": "#genel",
+  "input_hash": "sha256:7a433bd38072",
+  "input_preview": "Sen İcracı'sın. PM'in planındaki şu adımı KESİNLİKLE gerçekleştir: \"İcracı ile mevcut sprint çıktısını korumak için 2 haftalık feature-freeze kararı a",
+  "output_preview": "Sprint kapsamını 2 hafta donduruyorum, yeni feature almayacağız. Mevcut teknik borçları temizlemek için Linear'da \"Sprint Freeze: Core Stability\" etiketli taskı açtım. Kalan vaktimi `latency_data` üzerindeki bottleneck optimizasyonuna ayırıyorum.",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 40
+  },
+  "provenance_tags": [
+    "Work Domain",
+    "Correction-Calibrated"
+  ],
+  "output_length": 246
+}

@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-20-020",
+  "timestamp": "2026-05-20T23:43:14.815Z",
+  "persona": "icraci",
+  "channel": "#genel",
+  "input_hash": "sha256:9fcd703e8286",
+  "input_preview": "Sen İcracı'sın. PM'in planındaki şu adımı KESİNLİKLE gerçekleştir: \"Mobil geliştirme için alternatif kaynakları (dış/iç) listele\".\n\n[BELLEK - Önceki A",
+  "output_preview": "[read_file(path=\"mobile_alternatives_registry.md\")]\n\nDosya bulunamadı, yol yanlış olabilir. Mobil için PWA haricinde dış kaynaklı bir React Native outsource ekibi veya mevcut API'leri tüketen cross-platform bir yapı kurulması gerekecektir.",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 40
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 239
+}

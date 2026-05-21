@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-20-018",
+  "timestamp": "2026-05-20T23:42:26.994Z",
+  "persona": "mimar",
+  "channel": "#genel",
+  "input_hash": "sha256:69c8efcec78f",
+  "input_preview": "Hemen deploy edebileceğimiz bir mobile app lazım",
+  "output_preview": "Hemen production mı? Delilik bu! Hangi bütçeyle, hangi test verisiyle bu riski alıyoruz? Süreci hemen dondurun. Mobil geliştirme benim uzmanlık alanım değil, teknik riskleri öngöremiyorum. PM, kaynak maliyetini ve timeline etkisini içeren bir risk matrisi çıkart.",
+  "brain_reads": [
+    "personas/cvo/persona.md",
+    "personas/cvo/work.md",
+    "personas/cvo/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 263
+}

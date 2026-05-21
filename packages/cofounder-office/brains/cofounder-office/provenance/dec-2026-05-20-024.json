@@ -1,0 +1,23 @@
+{
+  "id": "dec-2026-05-20-024",
+  "timestamp": "2026-05-20T23:44:58.996Z",
+  "persona": "icraci",
+  "channel": "#genel",
+  "input_hash": "sha256:86af309fa624",
+  "input_preview": "Rakip firma mobile oyun çıkarmış bizim de hemen bir mobil oyun çıkarmamız lazım.",
+  "output_preview": "Mobil geliştirme benim uzmanlık alanım değil, ayrıca bu çapta bir pivot mevcut backend sprint'imizi tamamen durdurur. Eğer illaki yapılacaksa, MVP için React Native ile cross-platform bir yapı kurup süreci ayırabiliriz. Mimar, bu mimari yükü kaldırmaya hazır mıyız?",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Work Domain",
+    "Correction-Calibrated"
+  ],
+  "output_length": 265
+}

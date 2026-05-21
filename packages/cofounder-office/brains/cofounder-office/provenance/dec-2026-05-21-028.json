@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-21-028",
+  "timestamp": "2026-05-21T00:32:50.714Z",
+  "persona": "icraci",
+  "channel": "#strateji",
+  "input_hash": "sha256:6db0c1f48225",
+  "input_preview": "Sen İcracı'sın. PM'in planındaki şu adımı KESİNLİKLE gerçekleştir: \"İcracı, sistem verilerini Mimar'a raporla.\".\n\n[BELLEK - Önceki Adımlar]\nŞimdiye ka",
+  "output_preview": "{\n  \"action\": \"read_file\",\n  \"action_input\": \"{ \\\"file_path\\\": \\\"sistem_analizi.txt\\\" }\",\n  \"thought\": \"Sistem verilerini raporlamam istendi, önce analizi okuyup Mimar için gerekli teknik özeti çıkarmalıyım.\"\n}",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 40
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 210
+}

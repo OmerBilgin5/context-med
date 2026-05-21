@@ -1,0 +1,23 @@
+{
+  "id": "dec-2026-05-20-008",
+  "timestamp": "2026-05-20T23:37:16.822Z",
+  "persona": "arabulucu",
+  "channel": "#genel",
+  "input_hash": "sha256:ccc2bb71e052",
+  "input_preview": "Ekip; Surgeon-CoPilot'ın yapay zeka çıkarım (inference) hızını arttırmak istiyoruz. Modeli sunucuda PyTorch ile mi barındıralım, yoksa TensorRT ile op",
+  "output_preview": "Mimar, TensorRT ile %40 hız artışı mümkün ancak uyumluluk riskleri ve geliştirme süresi eforu ciddi oranda artıracaktır. İcracı, mevcut sprint kapasitemizle bu optimizasyonun sadece deployment sürecini 1.5 hafta geciktireceğini öngörüyor... Şu anki haliyle yayınlayıp sonraki iterasyonda optimize etm",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 70
+  },
+  "provenance_tags": [
+    "Work Domain",
+    "Correction-Calibrated"
+  ],
+  "output_length": 611
+}

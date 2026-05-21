@@ -1,0 +1,24 @@
+{
+  "id": "dec-2026-05-20-017",
+  "timestamp": "2026-05-20T23:42:23.078Z",
+  "persona": "arabulucu",
+  "channel": "#genel",
+  "input_hash": "sha256:69c8efcec78f",
+  "input_preview": "Hemen deploy edebileceğimiz bir mobile app lazım",
+  "output_preview": "Mimar Bey, mevcut sprint'imizdeki anonimleştirme işi ve İcracı'nın belirttiği mobil geliştirici eksikliği nedeniyle, şu anki kaynaklarla \"hemen\" bir mobil app deploy etmemiz mümkün değil. İcracı'nın backend API hazırlığı ile paralel, mobil taraf için ya dış destek almalıyız ya da mevcut öncelikleri ",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 100
+  },
+  "provenance_tags": [
+    "Work Domain",
+    "Expression DNA",
+    "Correction-Calibrated"
+  ],
+  "output_length": 612
+}

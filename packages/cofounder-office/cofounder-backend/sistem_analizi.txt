@@ -1,0 +1,15 @@
+[SİSTEM PERFORMANS ANALİZ RAPORU - MAYIS 2026]
+--------------------------------------------------
+Durum: KRİTİK VERİMSİZLİK UYARISI
+Dosya: core_inference.py (Yapay Zeka Çıkarım Motoru)
+
+Saptanan Metrikler:
+- API İstek Gecikmesi (Latency): 1850ms (Hedef: < 200ms)
+- Bellek Tüketimi (RAM): 8.4 GB (Sınır: 4.0 GB)
+- GPU Verimliliği: %35 (Bottleneck: CPU veri yükleme hattı)
+- Hata Oranı (Error Rate): %4.2 (Bloke edici veri paketleri nedeniyle)
+
+Önerilen Aksiyonlar:
+1. Çıkarım motorunun TensorRT ile optimize edilip ONNX formatına taşınması (Efor: 5 gün).
+2. CPU veri ön-yükleme hattının paralel iş parçacıklarına bölünmesi (Efor: 2 gün).
+3. Bellek sızıntısı (memory leak) tespiti için profiler çalıştırılması (Efor: 1 gün).

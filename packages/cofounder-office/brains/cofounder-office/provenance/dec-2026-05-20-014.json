@@ -1,0 +1,22 @@
+{
+  "id": "dec-2026-05-20-014",
+  "timestamp": "2026-05-20T23:39:39.319Z",
+  "persona": "icraci",
+  "channel": "#genel",
+  "input_hash": "sha256:61e322486c9e",
+  "input_preview": "Sen İcracı'sın. PM'in planındaki şu adımı KESİNLİKLE gerçekleştir: \"RBAC ve anonimleştirme eforunu ayrıştır\".\n\n[BELLEK - Önceki Adımlar]\nŞimdiye kadar",
+  "output_preview": "read_file(path=\"rbac_anonymization_specs.md\")",
+  "brain_reads": [
+    "personas/doer/persona.md",
+    "personas/doer/work.md",
+    "personas/doer/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 50
+  },
+  "provenance_tags": [
+    "Correction-Calibrated"
+  ],
+  "output_length": 45
+}

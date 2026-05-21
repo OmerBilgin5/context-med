@@ -1,0 +1,23 @@
+{
+  "id": "dec-2026-05-20-012",
+  "timestamp": "2026-05-20T23:39:10.810Z",
+  "persona": "arabulucu",
+  "channel": "#genel",
+  "input_hash": "sha256:e4663c17563e",
+  "input_preview": "Ekip; ameliyat loglarında hasta kişisel verilerinin (KVKK/HIPAA) korunması için verileri kaydeder kaydetmez anonimleştirmeli miyiz (de-identification)",
+  "output_preview": "RBAC tek başına KVKK uyumu için yeterli bir risk yönetimi stratejisi değil, verinin üretim anında anonimleştirilmesi zorunlu görünüyor. Mevcut sprint planımızda bu değişikliğin eforu yaklaşık 4 gün, bu da teslim tarihimizi kaydırır. İcracı, pipeline üzerindeki maliyeti netleştirebilir misin?\n\n```jso",
+  "brain_reads": [
+    "personas/pm/persona.md",
+    "personas/pm/work.md",
+    "personas/pm/correction-log.md"
+  ],
+  "hitl_status": "auto",
+  "eval_score": {
+    "fidelity_score": 65
+  },
+  "provenance_tags": [
+    "Work Domain",
+    "Correction-Calibrated"
+  ],
+  "output_length": 445
+}
